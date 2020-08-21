@@ -9,7 +9,8 @@ class ReportsController {
     const totalSurvivorsInfected = await db('survivors')
       .count({ total: 'id' })
       .where('infected', 1)
-      .first();    
+      .first();
+          
         
     const nonInfecteds = `${(1 - (totalSurvivorsInfected.total/totalSurvivors.total)).toFixed(2)}%`;
     const percentageNonInfectedSurvivors = nonInfecteds.replace('0.', '');

@@ -29,7 +29,7 @@ class MarkSurvivorAsInfected {
             .where('survivor_marked_id', survivorMarkedId)
             .first();
   
-          if(infectionReportCounter.total < 1 || infectionReportCounter === undefined) {
+          if(infectionReportCounter.total < 4 || infectionReportCounter === undefined) {
          
             try {
               await db('infection_report').insert({
@@ -50,7 +50,7 @@ class MarkSurvivorAsInfected {
               }
             }
   
-          if(infectionReportCounter.total === 1 ){
+          if(infectionReportCounter.total === 4 ){
             try {
     
               
