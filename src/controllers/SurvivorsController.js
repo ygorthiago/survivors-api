@@ -3,16 +3,27 @@ const db = require('../database/connection');
 class SurvivorsController {
   async show (request, response) {
     const {id} = await request.query;
-    const {name} = await request.query;
+    const {name} = await request.query; 
+
+    const columns = [
+      'survivors.id',
+      'survivors.name',
+      'survivors.gender',
+      db.raw('survivors.last_location_latitude - 0.0849373 as last_location_latitude'),
+      db.raw('survivors.last_location_longitude + 0.0052109 as last_location_longitude'),
+      'survivors.infected'
+    ]
     
     const survivor = await db('survivors')
+    .select(columns)
       .modify(function (qb) {
-        if(id != undefined) {
+        if(id != undefined) {          
           qb.where('id', id)
         } else if (name != undefined) {
           qb.where('name', name)
         }
       });
+      
     
       if(survivor[0] === undefined || !survivor ) {
         return response.status(200).json({ message: 'Survivor not found' });
@@ -32,7 +43,16 @@ class SurvivorsController {
   }
 
   async index (request, response) {
-    const survivors = await db('survivors').select('*')
+      const columns = [
+      'survivors.id',
+      'survivors.name',
+      'survivors.gender',
+      db.raw('survivors.last_location_latitude - 0.0849373 as last_location_latitude'),
+      db.raw('survivors.last_location_longitude + 0.0052109 as last_location_longitude'),
+      'survivors.infected'
+    ];
+
+    const survivors = await db('survivors').select(columns);
   
     return await response.status(200).json(survivors);
   }
@@ -50,8 +70,8 @@ class SurvivorsController {
     const newLocation = await db('survivors')
       .where('survivors.id', id)
       .update({
-        last_location_latitude: latitude,
-        last_location_longitude: longitude
+        last_location_latitude: latitude + 0.0849373,
+        last_location_longitude: longitude - 0.0052109
       });
     
       return await response.status(200).json('location updated');
@@ -85,8 +105,8 @@ class SurvivorsController {
           name,
           age,
           gender,
-          last_location_latitude,
-          last_location_longitude,
+          last_location_latitude: (last_location_latitude + 0.0849373),
+          last_location_longitude: (last_location_longitude - 0.0052109),
           infected: false
         }
     

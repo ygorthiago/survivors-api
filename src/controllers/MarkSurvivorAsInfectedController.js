@@ -10,7 +10,7 @@ class MarkSurvivorAsInfected {
 
     const survivorMarked = await db('survivors')
       .whereRaw('LOWER(name) = ?', name.toLowerCase())
-      .first();
+      .first();    
      
     if(!survivorMarked) {
        return response.status(200).json({ message: 'Survivor not found' });
@@ -29,7 +29,7 @@ class MarkSurvivorAsInfected {
             .where('survivor_marked_id', survivorMarkedId)
             .first();
   
-          if(infectionReportCounter.total < 4 || infectionReportCounter === undefined) {
+          if(infectionReportCounter.total < 1 || infectionReportCounter === undefined) {
          
             try {
               await db('infection_report').insert({
@@ -50,7 +50,7 @@ class MarkSurvivorAsInfected {
               }
             }
   
-          if(infectionReportCounter.total === 4 ){
+          if(infectionReportCounter.total === 1 ){
             try {
     
               
@@ -70,7 +70,8 @@ class MarkSurvivorAsInfected {
                 .update({
                   infected: true
                 });
-    
+        
+
               infectedInventory.map(async (item) => {
                 await db('inventory')
                   .where('inventory.survivor_id', reporterId)
@@ -79,15 +80,24 @@ class MarkSurvivorAsInfected {
                     qtd: reporterInventory[item.item_id -1].qtd + item.qtd
                   });
               });
-    
+
+              const itemPoints = await db('items')
+                .select('*');
+        
+              const totalPoints = await db('points_lost')
+                .select('*');
+
               infectedInventory.map(async (item) => {
-                await db('inventory')
-                  .where('inventory.survivor_id', survivorMarkedId)
-                  .andWhere('inventory.item_id', item.item_id)
+                await db('points_lost')
+                  .where('points_lost.item_id', item.item_id)
                   .update({
-                    qtd: 0
-                  });            
+                    total_points: totalPoints[item.item_id - 1].total_points + (itemPoints[item.item_id - 1].points * item.qtd) 
+                  })
               });
+    
+              await db('inventory')
+                .where('inventory.survivor_id', survivorMarkedId)
+                .del()
       
               return response.status(202).json({
                 message: `${name} are infected!`
