@@ -2,20 +2,21 @@ const db = require('../database/connection');
 
 class SurvivorsController {
   async show (request, response) {
-    const {id} = request.query;
-    const {name} = request.query;
-
+    const {id} = await request.query;
+    const {name} = await request.query;
+    console.log(id)    
     const survivor = await db('survivors')
-    .modify(function (qb) {
-      if(id != undefined) {
-        qb.where('id', id)
-      } else if (name != undefined) {
-        qb.where('name', name)
-      }
-    });
+      .modify(function (qb) {
+        if(id != undefined) {
+          qb.where('id', id)
+        } else if (name != undefined) {
+          qb.where('name', name)
+        }
+      });
+    
 
       if(!survivor) {
-        return response.status(400).json({ message: 'Survivor not found.' });
+        return response.status(200).json({ message: 'Survivor not found' });
       }
 
       const survivorId = survivor[0].id;
