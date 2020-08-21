@@ -15,7 +15,7 @@ class SurvivorsController {
       });
     
       if(survivor[0] === undefined || !survivor ) {
-        return response.status(204).json({ message: 'Survivor not found' });
+        return response.status(404).json({ message: 'Survivor not found' });
       } else {
         const survivorId = survivor[0].id;
     
