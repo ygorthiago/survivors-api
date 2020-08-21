@@ -4,7 +4,7 @@ class SurvivorsController {
   async show (request, response) {
     const {id} = await request.query;
     const {name} = await request.query;
-    console.log(id)    
+    
     const survivor = await db('survivors')
       .modify(function (qb) {
         if(id != undefined) {
@@ -14,19 +14,19 @@ class SurvivorsController {
         }
       });
     
-
-      if(!survivor) {
+      if(survivor[0] === undefined || !survivor ) {
         return response.status(200).json({ message: 'Survivor not found' });
-      }
+      } else {
+        const survivorId = survivor[0].id;
+    
+        const inventory = await db('items')
+          .select('items.id', 'items.name', 'items.points', 'inventory.qtd', 'items.image')
+          .join('inventory', 'items.id', '=', 'inventory.item_id')
+          .where('inventory.survivor_id', survivorId);
+    
+        return response.status(200).json({ survivor, inventory });
 
-      const survivorId = survivor[0].id;
-  
-      const inventory = await db('items')
-        .select('items.id', 'items.name', 'items.points', 'inventory.qtd', 'items.image')
-        .join('inventory', 'items.id', '=', 'inventory.item_id')
-        .where('inventory.survivor_id', survivorId);
-  
-      return response.json({ survivor, inventory });
+      }
     
 
   }
