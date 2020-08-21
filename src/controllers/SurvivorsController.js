@@ -15,7 +15,7 @@ class SurvivorsController {
       });
     
       if(survivor[0] === undefined || !survivor ) {
-        return response.status(404).json({ message: 'Survivor not found' });
+        return response.status(200).json({ message: 'Survivor not found' });
       } else {
         const survivorId = survivor[0].id;
     
@@ -24,7 +24,7 @@ class SurvivorsController {
           .join('inventory', 'items.id', '=', 'inventory.item_id')
           .where('inventory.survivor_id', survivorId);
     
-        return response.status(200).json({ survivor, inventory });
+        return response.status(202).json({ survivor, inventory });
 
       }
     
