@@ -10,6 +10,4 @@ app.use(express.json());
 app.use('/items', express.static(path.resolve(__dirname, '..', 'uploads')));
 app.use(routes);
 
-app.listen(3333, () => {
-  console.log('running.');
-});
+app.listen(process.env.PORT || 3333);
