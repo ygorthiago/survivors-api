@@ -8,7 +8,7 @@ class SurvivorsController {
     const columns = [
       'survivors.id',
       'survivors.name',
-      'survirors.age',
+      'survivors.age',
       'survivors.gender',
       db.raw('survivors.last_location_latitude - 0.0849373 as last_location_latitude'),
       db.raw('survivors.last_location_longitude + 0.0052109 as last_location_longitude'),
@@ -47,7 +47,7 @@ class SurvivorsController {
       const columns = [
       'survivors.id',
       'survivors.name',
-      'survirors.age',
+      'survivors.age',
       'survivors.gender',
       db.raw('survivors.last_location_latitude - 0.0849373 as last_location_latitude'),
       db.raw('survivors.last_location_longitude + 0.0052109 as last_location_longitude'),
