@@ -144,7 +144,7 @@ https://trz-survivors.herokuapp.com
 }
 ```
 
-### STATUS: 202
+### STATUS: 404
 - Survivor not found.
 
 #### Response example: 
